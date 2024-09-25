@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot IA</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh; /* Prend toute la hauteur de la fenêtre */
+        }
+        .chat-box {
+            display: flex;
+            flex-direction: column; /* Aligne les messages en colonne */
+            flex-grow: 1; /* Permet à la boîte de discussion de grandir */
+            overflow-y: auto; /* Ajoute un défilement si nécessaire */
+            border: 1px solid #ccc; /* Optionnel : ajoute une bordure */
+            padding: 10px; /* Ajoute un peu d'espace à l'intérieur de la boîte */
+            border-radius: 5px; /* Arrondit les coins */
+        }
+        .question-button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .question-button:hover {
+            background-color: #0056b3;
+        }
+        .typing {
+            display: flex;
+            align-items: center;
+        }
+        .dot {
+            height: 10px;
+            width: 10px;
+            background-color: gray;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: blink 1.5s infinite;
+        }
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        .ai-message, .user-message {
+            max-width: 80%; /* Limite la largeur des messages */
+            word-wrap: break-word; /* Permet aux mots longs de passer à la ligne */
+            margin: 5px; /* Ajoute un peu d'espace autour des messages */
+            padding: 10px; /* Ajoute un peu d'espace à l'intérieur des messages */
+            border-radius: 5px; /* Arrondit les coins */
+        }
+        .ai-message {
+            background-color: #007BFF; /* Couleur de fond pour les messages de l'IA */
+            align-self: flex-start; /* Aligne à gauche */
+        }
+        .user-message {
+            background-color: #00ADB5;; /* Couleur de fond pour les messages de l'utilisateur */
+            color: white; /* Couleur du texte pour les messages de l'utilisateur */
+            align-self: flex-end; /* Aligne à droite */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Je connais Jarolle TOLOFON</h1>
+    <div class="chat-container">
+        <div class="chat-box" id="chatBox"></div>
+        <div class="input-container">
+            <input type="text" id="userInput" placeholder="Tapez votre message..." />
+            <button id="sendButton">Envoyer</button>
+        </div>
+        <div class="typing" id="typingIndicator" style="display: none;">
+            <span>Votre IA Romaric est en train d'écrire</span>
+        </div>
+    </div>
+
+    <div class="question-list">
+        <h2>Questions fréquentes :</h2>
+        <button class="question-button" onclick="askQuestion('Jarolle TOLOFON?')">Jarolle TOLOFON</button>
+    </div>
+
+    <script>
+        // Définir la fonction askQuestion à l'extérieur de DOMContentLoaded
+        function askQuestion(question) {
+            userInput.value = question;
+            sendButton.click();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("DOM entièrement chargé et analysé.");
+
+            const chatBox = document.getElementById('chatBox');
+            const userInput = document.getElementById('userInput');
+            const sendButton = document.getElementById('sendButton');
+            const typingIndicator = document.getElementById('typingIndicator');
+
+            if (!chatBox || !userInput || !sendButton || !typingIndicator) {
+                console.error("Un ou plusieurs éléments n'ont pas été trouvés.");
+                return;
+            }
+
+            const aiWelcomeMessage = document.createElement('div');
+            aiWelcomeMessage.textContent = "Romaric : En quoi puis-je vous aider ?";
+            aiWelcomeMessage.classList.add('ai-message');
+            chatBox.appendChild(aiWelcomeMessage);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            const qaPairs = [
+                {
+                    question: "jarolle tolofon?",
+                    answer: "Romaric IA : Jarolle TOLOFON est un membre important de la famille TOLOFON. C'est d'ailleurs l'ainée d'une fratrie. Femme battante, elle est l'épaule sur laquelle se reposent ses frères. Jarolle TOLOFON est née le 1er juillet 2001 à Cotonou. Elle est chargée de la clientèle au centre de Coworking: Areolis Coworking. Situation amoureuse: célibataire les jeudis dans l'après-midi. Elle mange de tout. En gros, Jarolle TOLOFON est une très belle âme."
+                }
+            ];
+
+            const gratitudeExpressions = [
+                "merci",
+                "je vous remercie",
+                "merci beaucoup",
+                "c'est gentil",
+                "merci pour votre aide",
+                "je suis reconnaissant",
+                "merci pour cela"
+            ];
+
+            sendButton.addEventListener('click', function() {
+                if (userInput.value.trim() === '') {
+                    return;
+                }
+
+                const userMessage = document.createElement('div');
+                userMessage.textContent = userInput.value;
+                userMessage.classList.add('user-message');
+                chatBox.appendChild(userMessage);
+                userInput.value = '';
+
+                typingIndicator.style.display = 'flex';
+                typingIndicator.innerHTML = '<span> Votre IA Romaric est en train de taper</span>';
+                for (let i = 0; i < 3; i++) {
+                    const dot = document.createElement('div');
+                    dot.classList.add('dot');
+                    typingIndicator.appendChild(dot);
+                }
+
+                function typeWriter(text, element, delay) {
+                    let index = 0;
+                    element.textContent = '';
+                    const typing = setInterval(() => {
+                        if (index < text.length) {
+                            element.textContent += text.charAt(index);
+                            index++;
+                        } else {
+                            clearInterval(typing);
+                        }
+                    }, delay);
+                }
+
+                setTimeout(() => {
+                    typingIndicator.style.display = 'none';
+                    const aiMessage = document.createElement('div');
+                    aiMessage.classList.add('ai-message');
+
+                    const userQuery = userMessage.textContent.toLowerCase();
+                    const matchedPair = qaPairs.find(pair => 
+                        userQuery.includes(pair.question)
+                    );
+
+                    let responseText;
+                    if (matchedPair) {
+                        responseText = matchedPair.answer;
+                    } else if (gratitudeExpressions.some(expr => userQuery.includes(expr))) {
+                        responseText = "Romaric : Je vous remercie pour votre appréciation ! N'hésitez pas à poser d'autres questions.";
+                    } else {
+                        responseText = "Romaric : Désolé, cette question n'est pas dans mes compétences. Vous pouvez consulter mes questions fréquentes.";
+                    }
+
+                    typeWriter(responseText, aiMessage, 50);
+                    chatBox.appendChild(aiMessage);
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }, 1000);
+            });
+
+            userInput.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    sendButton.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
